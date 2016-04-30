@@ -1,0 +1,53 @@
+#### MAKE CHANGES HERE ONLY IF YOU REALLY KNOW WHAT YOU ARE DOING #####
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+
+log 127.0.0.1   local0
+
+pidfile     /opt/repo/run/haproxy.pid
+debug
+tune.ssl.default-dh-param 2048
+maxconn     10000
+daemon
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+
+defaults
+
+mode                    http
+log                     global
+option                  dontlognull
+option http-server-close
+option                  redispatch
+retries                 3
+timeout http-request    10s
+timeout queue           1m
+timeout connect         10s
+timeout client          1m
+timeout server          1m
+timeout http-keep-alive 10s
+timeout check           10s
+maxconn                 10000
+
+frontend ft_http
+
+bind :80
+mode http
+stats enable
+stats auth admin:password
+stats refresh 30s
+stats show-node
+stats uri  /haproxy_adm_panel
+stats admin if TRUE
+default_backend bk_http
+ 
+backend bk_http ###HOSTS ARE ADDED TO THIS BACKEND BY DEFAULT
+
+mode http
+cookie SRVNAME insert
+balance roundrobin

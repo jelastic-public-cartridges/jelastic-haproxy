@@ -1,0 +1,7 @@
+$ModLoad imudp
+$UDPServerRun 514 
+$template Haproxy,"%msg%\n"
+local0.=info -/opt/repo/log/haproxy.log;Haproxy
+local0.notice -/opt/repo/log/haproxy-status.log;Haproxy
+### keep logs in localhost ##
+local0.* ~ 
